@@ -1,0 +1,26 @@
+:root {
+    --time: "10:00";
+}
+
+.timer-cst {
+    display: flex;
+    align-items: center;
+}
+.timer-cst {
+    color: #41566f;
+    font-family: Brandon Grotesque, brandon-grotesque, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-right: 1px solid #d9dee4;
+    padding-right: 16px;
+}
+
+.timer {
+    padding-left: 16px;
+}
+.time::after {
+    content: var(--time) !important;
+}

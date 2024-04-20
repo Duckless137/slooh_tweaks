@@ -1,0 +1,369 @@
+body {
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    width: 400px;
+    align-items: center;
+    background-color: rgb(47, 47, 47);
+}
+
+@keyframes shake-can {
+    0% {
+        rotate: 0deg;
+        background-size: 90%;
+    }
+    20% {
+        rotate: 0deg;
+        background-size: 100%;
+    }
+    30% {
+        rotate: 15deg;
+    }
+    50% {
+        rotate: -15deg;
+    }
+    70% {
+        rotate: 15deg;
+    }
+    80% {
+        background-size: 100%;
+    }
+    100% {
+        rotate: 0deg;
+        background-size: 90%;
+    }
+}
+
+.main-settings {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 10px 0 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid black;
+    background-color: rgb(70, 70, 70);
+}
+
+.main-settings > div {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-size: large;
+    color: white;
+}
+
+.addl-settings {
+    display: flex;
+    width: fit-content;
+}
+
+.additions {
+    opacity: 1;
+    width: fit-content;
+    padding-right: 20px;
+    display: flex;
+    height: 200px;
+    overflow: scroll;
+    align-items: baseline;
+    justify-content: flex-start;
+}
+
+.toggle-state:checked > .addl-settings {
+    opacity: 0.3;
+}
+
+.checkboxes {
+    width: min-content;
+    display: flex;
+    align-items: baseline;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.additions {
+    display: flex;
+    flex-direction: column;
+}
+
+.custom-wrapper {
+    position: relative;
+    padding-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    justify-content: baseline;
+    background-color: rgb(37, 37, 37);
+    color: white;
+}
+
+.custom-wrapper:first-child {
+    border-radius: 15px 15px 0 0;
+}
+.custom-wrapper input {
+    color: white;
+}
+.heading-wrapper {
+    padding: 5px 5px 5px 5px;
+    margin-bottom: 5px;
+    border-radius: 15px 15px 0 0;
+    background-color: rgb(30, 30, 30);
+    gap: 6px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 250px;
+}
+.remove-link {
+    height: 90%;
+    position: relative;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: red;
+    background-image: url(icons/trash.png);
+    background-size: 90%;
+    background-position: center;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.remove-link:hover {
+    animation: shake-can 1s;
+    background-color: rgb(193, 0, 0);
+}
+
+.custom-heading {
+    font-size: medium;
+    font-weight: bold;
+    width: 1rem;
+    position: relative;
+    flex-grow: 1;
+    background-color: transparent;
+    border: none;
+}
+
+.url-container {
+    display: flex;
+    width: 90%;
+    align-self: last baseline;
+    justify-content: center;
+    align-items: center;
+}
+
+.url-label {
+    font-weight: 500;
+    font-size: small;
+    position: relative;
+    height: min-content;
+    flex-shrink: 0;
+    padding-right: 5px;
+}
+
+.url-input {
+    width: 1rem;
+    background-color: transparent;
+    border: none;
+    flex-grow: 1;
+    text-decoration: underline;
+}
+
+.url-input:focus {
+    outline: none;
+}
+
+.link-container {
+    display: flex;
+    width: 90%;
+    align-self: last baseline;
+    justify-content: center;
+    align-items: center;
+}
+
+.link-label {
+    font-weight: 500;
+    font-size: small;
+    position: relative;
+    height: min-content;
+    flex-shrink: 0;
+    padding-right: 5px;
+}
+
+.link-input {
+    width: 1rem;
+    flex-grow: 1;
+    background-color: transparent;
+    text-decoration: underline;
+    border: none;
+}
+
+.link-input:focus {
+    outline: none;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 17px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    border-radius: 17px;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+.slider::after {
+    border-radius: 50%;
+    position: absolute;
+    content: "";
+    height: 13px;
+    width: 13px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+input:checked+.slider {
+    background-color: #2196F3;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider::after {
+    -webkit-transform: translateX(12px);
+    -ms-transform: translateX(12px);
+    transform: translateX(12px);
+}
+
+.large-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.large-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.large-slider {
+    border-radius: 34px;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+.large-slider::after {
+    border-radius: 50%;
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+input:checked+.large-slider {
+    background-color: #2196F3;
+}
+
+input:focus+.large-slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.large-slider::after {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+.row {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    width: max-content;
+    margin-bottom: 5px;
+}
+
+.container > input {
+    margin: 0;
+    position: relative;
+    height: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 0;
+}
+
+.container > label {
+    background-image: none;
+    font-size: 17px;
+    padding-left: 3px;
+    color: white;
+    position: relative;
+    transition: all 1s;
+    height: min-content;
+}
+
+.container:hover > label {
+    background-image: linear-gradient(90deg,gray,transparent);
+}
+
+.link-injector {
+    z-index: 1;
+    height: 20px;
+    position: fixed;
+    bottom: 5px;
+    left: 10px;
+    rotate: 0deg;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: rgb(0, 209, 0);
+    background-image: url(icons/plus.png);
+    background-size: cover;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.link-injector:hover {
+    rotate: 90deg;
+    background-color: rgb(0, 184, 0);
+}
