@@ -103,21 +103,23 @@ function removeLinks() {
     }
 }
 function createDate() {
-    const timer = document.createElement("div");
-    timer.className = "timer-cst";
-    const newDate = new Date();
-    let midday = "PM";
-    const hours = ((newDate.getHours() % 24) + 24) % 24;
-    if (hours < 12) {
-        midday = "AM";
+    if (newPage) {
+        const timer = document.createElement("div");
+        timer.className = "timer-cst";
+        const newDate = new Date();
+        let midday = "PM";
+        const hours = ((newDate.getHours() % 24) + 24) % 24;
+        if (hours < 12) {
+            midday = "AM";
+        }
+        let minutes = JSON.stringify(newDate.getMinutes() % 60);
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        const date = `${hours}:${minutes} ${midday} CST`;
+        timer.innerHTML = date;
+        document.getElementById("notifications").prepend(timer);
     }
-    let minutes = JSON.stringify(newDate.getMinutes() % 60);
-    if (minutes < 10) {
-        minutes = "0" + minutes;
-    }
-    const date = `${hours}:${minutes} ${midday} CST`;
-    timer.innerHTML = date;
-    document.getElementById("notifications").prepend(timer);
 }
 function updateDate() {
     const timer = document.querySelector(".timer-cst");
@@ -195,103 +197,70 @@ function missions() {
     observer.observe(app, { childList: true, subtree: true, characterData: true });
 }
 
-function starParty() {
+class Label {
+    constructor(domTarget, labelQuery, cstLabel) {
+        this.domTarget = domTarget;
+        this.labelQuery = labelQuery;
+        this.cstLabel = (text) => {
+            const newLabel = cstLabel.replace("{label}", text);
+            return newLabel;
+        }
+    }
+}
+
+const ustDomData = [
+    new Label('upcoming-events-section-wrapper','time.upcoming-event-date',' ({label} CST)'),
+    new Label('telescopes-section','time:not(upcoming-event-date)','\n({label} CST)'),
+    new Label('mission-card-redesign','.section-title:not(.astronauts-title)',' ({label} CST)'),
+    new Label('slick-slider','.title',' ({label} CST)')
+]
+
+function detectLabels() {
     const app = document.querySelector('#app');
-    const observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-            if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                let element = null;
-                const hasClass = [].some.call(mutation.addedNodes, function (el) {
-                    let containsClass = false;
-                    try {
-                        element = el;
-                        containsClass = el.classList.contains('upcoming-events-section-wrapper');
-                    } catch (error) {
-                        element = null;
-                        containsClass = false;
-                    }
-                    return containsClass;
-                });
-                if (hasClass) {
-                    console.log('section wrapper added');
-                    const label = element.querySelector('time.upcoming-event-date');
+    const neededObservers = [];
+    console.log('Detecting labels')
+    for (const domData of ustDomData) {
+        const label = document.querySelector(domData.labelQuery);
+        if (label !== null) {
+            console.log(`${domData.labelQuery} existed! Whoops`);
+            const labels = document.querySelectorAll(domData.labelQuery);
+            for (const label of labels) {
+                if (label.innerHTML.toLowerCase().includes('utc') && !label.innerHTML.toLowerCase().includes('cst')) {
                     const time = label.innerHTML.slice(label.innerHTML.length - 9, label.innerHTML.length - 4);
-                    const cst = ` (${convertToCST(time)} CST)`;
+                    const cst = domData.cstLabel(convertToCST(time));
                     label.innerHTML += cst;
                 }
             }
-        });
+        } else {
+            console.log(`${domData.labelQuery} does not exist`);
+        }
+    }
+    const observer = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
             if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                let element = null;
-                const hasClass = [].some.call(mutation.addedNodes, function (el) {
-                    let containsClass = false;
-                    try {
-                        if (!containsClass) {
+                for (const domData of ustDomData) {
+                    let element = null;
+                    const hasClass = [].some.call(mutation.addedNodes, function (el) {
+                        let containsClass = false;
+                        try {
                             element = el;
-                            containsClass = el.classList.contains(`telescopes-section`);
+                            containsClass = el.classList.contains(domData.domTarget);
+                        } catch (error) {
+                            element = null;
+                            containsClass = false;
                         }
-                    } catch (error) {
-                    }
-                    return containsClass;
-                });
-                if (hasClass) {
-                    console.log('times added');
-                    const labels = element.querySelectorAll('time:not(upcoming-event-date)');
-                    for (const label of labels) {
-                        const time = label.innerHTML.slice(0, 5);
-                        const cst = `\n(${convertToCST(time)})`;
-                        label.innerHTML += cst;
-                    }
-                }
-            }
-        });
-        mutations.forEach(function (mutation) {
-            if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                let element = null;
-                const hasClass = [].some.call(mutation.addedNodes, function (el) {
-                    let containsClass = false;
-                    try {
-                        if (!containsClass) {
-                            element = el;
-                            containsClass = el.classList.contains(`mission-card-redesign`);
+                        return containsClass;
+                    });
+                    if (hasClass) {
+                        console.log(`${domData.labelQuery} has been added`);
+                        const labels = element.querySelectorAll(domData.labelQuery);
+                        for (const label of labels) {
+                            if (label.innerHTML.toLowerCase().includes('utc') && !label.innerHTML.toLowerCase().includes('cst')) {
+                                const time = label.innerHTML.slice(label.innerHTML.length - 9, label.innerHTML.length - 4);
+                                const cst = domData.cstLabel(convertToCST(time));
+                                label.innerHTML += cst;
+                            }
                         }
-                    } catch (error) {
-                    }
-                    return containsClass;
-                });
-                if (hasClass) {
-                    console.log('mission added');
-                    const labels = element.querySelectorAll('.section-title:not(.astronauts-title)');
-                    for (const label of labels) {
-                        const time = label.innerHTML.slice(label.innerHTML.length - 9, label.innerHTML.length - 4);;
-                        const cst = ` (${convertToCST(time)})`;
-                        label.innerHTML += cst;
-                    }
-                }
-            }
-        });
-        mutations.forEach(function (mutation) {
-            if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                let element = null;
-                const hasClass = [].some.call(mutation.addedNodes, function (el) {
-                    let containsClass = false;
-                    try {
-                        if (!containsClass) {
-                            element = el;
-                            containsClass = el.classList.contains(`slick-slider`);
-                        }
-                    } catch (error) {
-                    }
-                    return containsClass;
-                });
-                if (hasClass) {
-                    console.log('featured missions added');
-                    const labels = element.querySelectorAll('.title');
-                    for (const label of labels) {
-                        const time = label.innerHTML.slice(label.innerHTML.length - 9, label.innerHTML.length - 4);
-                        const cst = ` (${convertToCST(time)})`;
-                        label.innerHTML += cst;
                     }
                 }
             }
@@ -301,18 +270,27 @@ function starParty() {
 }
 
 function modifyNavbar() {
-    if (settings.settings.state) {
+    if (settings.settings.state && newPage) {
         addLinks();
         removeLinks();
     }
     if (settings.settings.showcst) {
         createDate();
-        if (location.href == 'https://app.slooh.com/NewDashboard') starParty();
-        if (location.href == 'https://app.slooh.com/missions/bySlooh1000') missions();
         setInterval(updateDate, 1000);
+    }
+}
+
+function applyCST() {
+    if (settings.settings.showcst) {
+        if (location.href == 'https://app.slooh.com/NewDashboard') detectLabels();
+        if (location.href == 'https://app.slooh.com/missions/bySlooh1000') missions();
         observatoryInfo();
     }
+}
 
+function initModification() {
+    awaitLoad();
+    applyCST();
 }
 
 async function fetchLocalStorage(keys) {
@@ -354,9 +332,25 @@ function awaitLoad() {
     }
 }
 
+function monitorPage() {
+    let currentPage = location.href;
+    initModification();
+
+    setInterval(function()
+    {
+        if (currentPage != location.href)
+        {
+            newPage = false;
+            currentPage = location.href;
+            initModification();
+        }
+    }, 500);
+}
+
+let newPage = true;
 
 window.onload = function () {
     console.log('Window loaded...');
     const keyArray = Object.keys(settings);
-    fetchLocalStorage(keyArray).then(awaitLoad);
+    fetchLocalStorage(keyArray).then(monitorPage);
 }
