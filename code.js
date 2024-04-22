@@ -78,7 +78,7 @@ function lockSettings(isOn) {
 }
 
 async function setToDefault(toDefine) {
-    const baseSetting = settings[toDefine];
+    const baseSetting = new BaseSettings()[toDefine];
     console.log(baseSetting);
     if (toDefine == 'additions') {
         await chrome.storage.sync.set({ "additions": baseSetting }).then(() => {
