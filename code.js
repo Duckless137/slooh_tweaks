@@ -372,12 +372,15 @@ async function monitorDefault() {
     const defaultButton = document.querySelector('.reset-defaults');
     defaultButton.addEventListener('click', async function() {
         console.log("refresh");
-        await clearCache().then(async function () {
-            await setToDefault('removals').then();
-            await setToDefault('additions').then();
-            await setToDefault('settings').then();
-            refresh();
-        });
+        const conf = confirm('Are you SURE you would like to reset the settings?');
+        if (conf) {
+            await clearCache().then(async function () {
+                await setToDefault('removals').then();
+                await setToDefault('additions').then();
+                await setToDefault('settings').then();
+                refresh();
+            });
+        }
     });
 }
 
