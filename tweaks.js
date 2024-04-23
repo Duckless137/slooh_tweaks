@@ -27,6 +27,11 @@ const settings = {
     }
 }
 
+function mod(x,y) {
+    return ((x % y) + y) % y;
+
+}
+
 function setToDefault(toDefine) {
     const baseSetting = settings[toDefine];
     console.log(baseSetting);
@@ -108,10 +113,11 @@ function createDate() {
         timer.className = "timer-cst";
         const newDate = new Date();
         let midday = "PM";
-        const hours = ((newDate.getHours() % 24) + 24) % 24;
+        let hours = mod(newDate.getHours(),24);
         if (hours < 12) {
             midday = "AM";
         }
+        hours = ((hours - 1) % 12) + 1;
         let minutes = JSON.stringify(newDate.getMinutes() % 60);
         if (minutes < 10) {
             minutes = "0" + minutes;
@@ -125,11 +131,11 @@ function updateDate() {
     const timer = document.querySelector(".timer-cst");
     const newDate = new Date();
     let midday = "PM";
-    let hours = ((newDate.getHours() % 24) + 24) % 24;
+    let hours = mod(newDate.getHours(),24);
     if (hours < 12) {
         midday = "AM";
     }
-    hours %= 12;
+    hours = ((hours - 1) % 12) + 1;
     let minutes = JSON.stringify(newDate.getMinutes() % 60);
     if (minutes < 10) {
         minutes = "0" + minutes;
@@ -145,11 +151,11 @@ function convertToCST(time, trimStart) {
     const convert = times.map((str, idx) => {
         let num = Number(str);
         if (idx == 0) {
-            num = (((num - 7) % 24) + 24) % 24;
+            num = mod(num - 7,12);
             if (num < 12) {
                 midday == "AM";
             }
-            num %= 12;
+            num = ((num - 1) % 12) + 1;
         }
         if (num < 10 && !trimStart) {
             num = "0" + num;
