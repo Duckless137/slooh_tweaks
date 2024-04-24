@@ -22,8 +22,14 @@ const settings = {
         "guides": true
     },
     "settings": {
-        "state": true,
-        "showcst": true
+        "state": {
+            "name": "Toggle Extension",
+            "state": true
+        },
+        "showcst": {
+            "name": "Show CST",
+            "state": true
+        },
     }
 }
 
@@ -52,9 +58,15 @@ class BaseSettings {
             "guides": true
         };
         this.settings = {
-            "state": true,
-            "showcst": true
-        }
+            "state": {
+                "name": "Toggle Extension",
+                "state": true
+            },
+            "showcst": {
+                "name": "Show CST",
+                "state": true
+            }
+        };
     }
 }
 
@@ -314,26 +326,55 @@ function createCustomLinks() {
     }
 }
 
+class SettingSwitch {
+    constructor(key) {
+        const data = settings.settings[key]; 
+        console.log(data);
+        const wrapper = document.createElement('div');
+        wrapper.className = 'setting-wrapper';
+
+        const label = document.createElement('label');
+        label.innerHTML = data.name;
+
+        const container = document.createElement('label');
+        container.className = `large-switch toggle-${key}`;
+
+        const input = document.createElement('input');
+        input.type = "checkbox";
+        input.checked = data.state;
+        this.input = input;
+
+        const span = document.createElement('span');
+        span.className = "large-slider";
+
+        container.appendChild(input);
+        container.appendChild(span);
+
+        wrapper.appendChild(label);
+        wrapper.appendChild(container);
+
+        return document.querySelector('.main-settings').appendChild(wrapper);
+    }
+}
+
 function applySettings() {
-    console.log(settings);
-    console.log(settings.settings);
     const keys = Object.keys(settings.settings);
     for (const key of keys) {
         console.log(key);
         console.log(settings.settings[key])
-        const element = document.querySelector(`.toggle-${key}`).querySelector('input');
-        element.checked = settings.settings[key];
-        element.addEventListener("change", (e) => {
+        new SettingSwitch(key);
+        const element = document.querySelector(`.toggle-${key}`);
+        element.querySelector(`input`).addEventListener("change", (e) => {
             const target = e.target;
             const keyClassList = target.parentElement.classList;
             let key = true
             for (const keyClass of keyClassList) {
                 if (keyClass.includes("toggle-")) {
-                    key = keyClass.replace("toggle-","")
+                    key = keyClass.replace("toggle-","");
                 }
             }
             if (key !== true) {
-                settings.settings[key] = target.checked;
+                settings.settings[key].state = target.checked;
                 console.log(settings.settings)
                 update('settings');
             }

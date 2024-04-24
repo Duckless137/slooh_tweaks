@@ -22,8 +22,14 @@ const settings = {
         "guides": true
     },
     "settings": {
-        "state": true,
-        "showcst": true
+        "state": {
+            "name": "Toggle Extension",
+            "state": true
+        },
+        "showcst": {
+            "name": "Show CST",
+            "state": true
+        }
     }
 }
 
