@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Slooh Tweaks Beta",
     "description": "Allows for more utility and customization of Slooh.",
-    "version": "0.42",
+    "version": "0.43",
     "icons": {
         "16": "icons/icon_16.png",
         "48": "icons/icon_48.png",
@@ -10,7 +10,7 @@
     },
     "content_scripts": [{
         "matches": ["https://app.slooh.com/*"],
-        "js":["tweaks.js"],
+        "js":["settings.js","tweaks.js"],
         "css": ["timer.css"]
     }],
     "action": {

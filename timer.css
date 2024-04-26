@@ -1,5 +1,9 @@
 :root {
-    --time: "10:00";
+    --time: "UTC";
+    --font: 10px;
+    --padding: 16px;
+    --border: 1px solid #d9dee4;
+    --width: auto;
 }
 
 .timer-cst {
@@ -19,7 +23,11 @@
 }
 
 .timer {
-    padding-left: 16px;
+    width: var(--width);
+    border-right: var(--border) !important;
+    font-size: var(--font) !important;
+    padding-right: var(--padding) !important;
+    padding-left: var(--padding);
 }
 .time::after {
     content: var(--time) !important;
