@@ -128,13 +128,16 @@ function missions() {
         if (hasClass) {
           console.log("time added");
           const timeLabel = element.querySelector(".time");
-          const time = convertToCST(timeLabel.innerHTML, true);
+          const time = convertToCST(timeLabel.innerHTML, false);
           if (settings.settings.showcst.value == "Append") {
             document
               .querySelector(":root")
               .style.setProperty("--time", `"${time}"`);
           } else {
-            timeLabel.innerHTML = time;
+            document
+              .querySelector(":root")
+              .style.setProperty("--time", `"${time.slice(5)}"`);
+            timeLabel.innerHTML = time.slice(0,5);
           }
         }
       }
@@ -292,6 +295,9 @@ function modifyNavbar() {
         document.querySelector(':root').style.setProperty('--font','0');
         document.querySelector(':root').style.setProperty('--border','"none"');
     }
+    if (location.href == "https://app.slooh.com/missions/bySlooh1000") {
+      missions();
+    }
     createDate();
     setInterval(updateDate, 1000);
   }
@@ -300,8 +306,6 @@ function modifyNavbar() {
 function applyCST() {
   if (settings.settings.showcst.value !== "Off") {
     if (location.href == "https://app.slooh.com/NewDashboard") detectLabels();
-    if (location.href == "https://app.slooh.com/missions/bySlooh1000")
-      missions();
     observatoryInfo();
   }
 }
