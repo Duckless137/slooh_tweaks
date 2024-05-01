@@ -64,50 +64,26 @@ function createDate() {
   if (newPage) {
     const timer = document.createElement("div");
     timer.className = "timer-cst";
-    const date = getTime();
+    const date = CST.getTime();
     if (settings.settings.showcst.value == "Append") {
-        timer.innerHTML = date + " CST";
+      timer.innerHTML = date + " CST";
     } else {
-        timer.innerHTML = date;
+      timer.innerHTML = date;
     }
     document.getElementById("notifications").prepend(timer);
   }
 }
 function updateDate() {
   const timer = document.querySelector(".timer-cst");
-  const date = getTime();
+  const date = CST.getTime();
   timer.innerHTML = date;
-}
-
-function convertToCST(time, trimStart) {
-  trimStart = trimStart || false;
-  const times = time.split(":");
-  let midday = "PM";
-  const convert = times.map((str, idx) => {
-    let num = Number(str);
-    if (idx == 0) {
-      num = mod(num - 5, 24);
-      if (num < 12) {
-        midday = "AM";
-      }
-      num = ((num - 1) % 12) + 1;
-    }
-    if (num < 10 && (!trimStart || idx == 1)) {
-      num = "0" + num;
-    } else {
-      num.toString();
-    }
-    return num;
-  });
-  const suffix = `${convert.join(":")} ${midday}`;
-  return suffix;
 }
 
 function observatoryInfo() {
   const timeLabels = document.querySelectorAll("time-label");
   for (const label of timeLabels) {
     const time = label.parentElement.querySelector(".time-field");
-    label.innerHTML = convertToCST(time);
+    label.innerHTML = CST.convertToCST(time);
   }
 }
 
@@ -128,7 +104,7 @@ function missions() {
         if (hasClass) {
           console.log("time added");
           const timeLabel = element.querySelector(".time");
-          const time = convertToCST(timeLabel.innerHTML, false);
+          const time = CST.convertToCST(timeLabel.innerHTML, false);
           if (settings.settings.showcst.value == "Append") {
             document
               .querySelector(":root")
@@ -136,8 +112,8 @@ function missions() {
           } else {
             document
               .querySelector(":root")
-              .style.setProperty("--time", `"${time.slice(5)}"`);
-            timeLabel.innerHTML = time.slice(0,5);
+              .style.setProperty("--time", `"${time.slice(6)}"`);
+            timeLabel.innerHTML = time.slice(0, 5);
           }
         }
       }
@@ -150,125 +126,106 @@ function missions() {
   });
 }
 
-class Label {
-  constructor(domTarget, labelQuery, cstLabel) {
-    this.domTarget = domTarget;
-    this.labelQuery = labelQuery;
-    this.cstLabel = (text) => {
-      const newLabel = cstLabel.replace("{label}", text);
-      return newLabel;
-    };
-  }
-}
-
-function getTime() {
-  const newDate = new Date();
-  let midday = "PM";
-  let hours = mod(newDate.getHours(), 24);
-  if (hours < 12) {
-    midday = "AM";
-  }
-  hours = ((hours - 1) % 12) + 1;
-  let minutes = JSON.stringify(newDate.getMinutes() % 60);
-  if (hours < 10) {
-    hours = "0" + hours;
-  }
-  if (minutes < 10) {
-    minutes = "0" + minutes;
-  }
-  return `${hours}:${minutes} ${midday}`;
-}
-
 const ustDomData = [
-  new Label(
+  new CST.Label(
     "upcoming-events-section-wrapper",
     "time.upcoming-event-date",
     " ({label} CST)"
   ),
-  new Label(
+  new CST.Label(
     "telescopes-section",
     "time:not(upcoming-event-date)",
     "\n({label} CST)"
   ),
-  new Label(
+  new CST.Label(
     "mission-card-redesign",
     ".section-title:not(.astronauts-title)",
     " ({label} CST)"
   ),
-  new Label("slick-slider", ".title", " ({label} CST)"),
-  new Label("telescopes-section", "time", " ({label} CST)"),
-  new Label("telescopes-section", ".status-info", " ({label} CST)"),
+  new CST.Label("slick-slider", ".title", " ({label} CST)"),
+  new CST.Label("telescopes-section", "time", " ({label} CST)"),
+  new CST.Label("telescopes-section", ".status-info", " ({label} CST)"),
+  new CST.Label(
+    "jsx-4149243949",
+    ".center-label",
+    " ({label} CST)",
+    "https://app.slooh.com/object-details/*/missions"
+  ),
+  // new CST.Label("obs-visibility-root","")
 ];
+function objectObserver() {
+  const app = document.querySelector("#app");
+  const observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+        let element = null;
+        const hasClass = [].some.call(mutation.addedNodes, function (el) {
+          let containsClass = false;
+          try {
+            element = el;
+            containsClass = el.nodeName == "DIV";
+          } catch (error) {
+            element = null;
+            containsClass = false;
+          }
+          return containsClass;
+        });
+        if (hasClass) {
+          console.log(`${".large"} has been added`);
+          const labels = element.querySelectorAll(".large");
+          console.log(labels);
+          for (const label of labels) {
+            CST.changeLabel(label, ".large");
+          }
+        }
+      }
+    });
+  });
+  observer.observe(app, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+  });
+}
 
 function detectLabels() {
   const app = document.querySelector("#app");
   console.log("Detecting labels");
   for (const domData of ustDomData) {
-    const label = document.querySelector(domData.labelQuery);
-    if (label !== null) {
-      console.log(`${domData.labelQuery} existed! Whoops`);
-      const labels = document.querySelectorAll(domData.labelQuery);
-      for (const label of labels) {
-        if (
-          label.innerHTML.toLowerCase().includes("utc") &&
-          !label.innerHTML.toLowerCase().includes("cst")
-        ) {
-          const time = label.innerHTML.slice(
-            label.innerHTML.length - 9,
-            label.innerHTML.length - 4
-          );
-          const cst = domData.cstLabel(convertToCST(time));
-          if (settings.settings.showcst.value == "Append") {
-            const cst = domData.cstLabel(convertToCST(time));
-            label.innerHTML += cst;
-          } else {
-            label.innerHTML =
-              label.innerHTML.slice(0, label.innerHTML.length - 9) +
-              convertToCST(time);
-          }
+    if (domData.canRun) {
+      const label = document.querySelector(domData.labelQuery);
+      if (label !== null) {
+        console.log(`${domData.labelQuery} existed! Whoops`);
+        const labels = document.querySelectorAll(domData.labelQuery);
+        for (const label of labels) {
+          CST.changeLabel(label, domData.labelQuery);
         }
+      } else {
+        console.log(`${domData.labelQuery} does not exist`);
       }
-    } else {
-      console.log(`${domData.labelQuery} does not exist`);
     }
   }
   const observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
       if (mutation.addedNodes && mutation.addedNodes.length > 0) {
         for (const domData of ustDomData) {
-          let element = null;
-          const hasClass = [].some.call(mutation.addedNodes, function (el) {
-            let containsClass = false;
-            try {
-              element = el;
-              containsClass = el.classList.contains(domData.domTarget);
-            } catch (error) {
-              element = null;
-              containsClass = false;
-            }
-            return containsClass;
-          });
-          if (hasClass) {
-            console.log(`${domData.labelQuery} has been added`);
-            const labels = element.querySelectorAll(domData.labelQuery);
-            for (const label of labels) {
-              if (
-                label.innerHTML.toLowerCase().includes("utc") &&
-                !label.innerHTML.toLowerCase().includes("cst")
-              ) {
-                const time = label.innerHTML.slice(
-                  label.innerHTML.length - 9,
-                  label.innerHTML.length - 4
-                );
-                if (settings.settings.showcst.value == "Append") {
-                  const cst = domData.cstLabel(convertToCST(time));
-                  label.innerHTML += cst;
-                } else {
-                  label.innerHTML = label.innerHTML.slice(0, label.innerHTML.length - 9) + convertToCST(time);
-                  if (domData.domTarget = '.status-info' && label.innerHTML.includes(' - ')) {
-                    label.innerHTML = convertToCST(label.innerHTML.slice(0,5)) + label.innerHTML.slice(5);
-                  }
-                }
+          if (domData.canRun) {
+            let element = null;
+            const hasClass = [].some.call(mutation.addedNodes, function (el) {
+              let containsClass = false;
+              try {
+                element = el;
+                containsClass = el.classList.contains(domData.domTarget);
+              } catch (error) {
+                element = null;
+                containsClass = false;
+              }
+              return containsClass;
+            });
+            if (hasClass) {
+              const labels = element.querySelectorAll(domData.labelQuery);
+              for (const label of labels) {
+                CST.changeLabel(label, domData.labelQuery);
               }
             }
           }
@@ -290,10 +247,10 @@ function modifyNavbar() {
   }
   if (settings.settings.showcst.value !== "Off") {
     if (settings.settings.showcst.value) {
-        document.querySelector(':root').style.setProperty('--padding','0');
-        document.querySelector(':root').style.setProperty('--width','0');
-        document.querySelector(':root').style.setProperty('--font','0');
-        document.querySelector(':root').style.setProperty('--border','"none"');
+      document.querySelector(":root").style.setProperty("--padding", "0");
+      document.querySelector(":root").style.setProperty("--width", "0");
+      document.querySelector(":root").style.setProperty("--font", "0");
+      document.querySelector(":root").style.setProperty("--border", '"none"');
     }
     if (location.href == "https://app.slooh.com/missions/bySlooh1000") {
       missions();
@@ -305,7 +262,9 @@ function modifyNavbar() {
 
 function applyCST() {
   if (settings.settings.showcst.value !== "Off") {
-    if (location.href == "https://app.slooh.com/NewDashboard") detectLabels();
+    detectLabels();
+    if (location.href.startsWith("https://app.slooh.com/object-details/"))
+      objectObserver();
     observatoryInfo();
   }
 }
