@@ -72,7 +72,7 @@ const CST = {
   },
   Label: class {
     constructor(domTarget, labelQuery, cstLabel, href) {
-      const intendedHref = href || "https://app.slooh.com/missions/bySlooh1000";
+      const intendedHref = href || "https://app.slooh.com/NewDashboard";
       this.canRun = location.href.is(intendedHref);
       this.domTarget = domTarget;
       this.labelQuery = labelQuery;
