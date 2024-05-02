@@ -19,8 +19,8 @@
         ],
         "css": ["src/timer.css"]
     }],
-    "action": {
-        "default_popup": "src/page/index.html"
+    "page_action": {
+        "default_popup": "src/page/index.html" 
     },
     "permissions": [
         "storage"
