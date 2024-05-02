@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Slooh Tweaks Beta",
     "description": "Allows for more utility and customization of Slooh.",
-    "version": "0.5",
+    "version": "0.51",
     "icons": {
         "16": "src/icons/icon_16.png",
         "48": "src/icons/icon_48.png",
