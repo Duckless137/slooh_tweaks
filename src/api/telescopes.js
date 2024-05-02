@@ -13,7 +13,7 @@ async function getTelescopeData() {
       "Content-Type": "application/json",
       Host: "app.slooh.com",
       Origin: "https://app.slooh.com",
-      Referer: "https://app.slooh.com/missions/bySlooh1000",
+      Referer: "https://app.slooh.com/missions/bySlooh1000"
     },
     body: JSON.stringify(req),
   })

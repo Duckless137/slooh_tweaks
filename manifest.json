@@ -2,8 +2,14 @@
     "manifest_version": 2,
     "name": "Slooh Tweaks Mozilla Beta",
     "description": "Allows for more utility and customization of Slooh.",
-    "version": "0.5",
-    "icons": {
+    "version": "0.51",
+    "applications": {
+        "gecko": {
+          "id": "slooh_tweaks@mozilla",
+          "strict_min_version": "60.0"
+        }
+      },
+      "icons": {
         "16": "src/icons/icon_16.png",
         "48": "src/icons/icon_48.png",
         "128": "src/icons/icon_128.png"
@@ -12,17 +18,23 @@
         "matches": ["https://app.slooh.com/*"],
         "js":[
             "src/libraries/settings.js",
-            "src/api/objects.js",
             "src/libraries/string.js",
             "src/libraries/cst.js",
-            "src/tweaks.js"
+            "tweaks.js"
         ],
-        "css": ["src/timer.css"]
+        "css": ["timer.css"]
     }],
-    "page_action": {
+    "browser_action": {
+        "default_icon": {
+            "16": "src/icons/icon_16.png",
+            "48": "src/icons/icon_48.png",
+            "128": "src/icons/icon_128.png"
+        },
         "default_popup": "src/page/index.html" 
     },
     "permissions": [
-        "storage"
+        "storage",
+        "https://app.slooh.com/*",
+        "https://app.slooh.com/api/obs/getAllObservatoryStatus"
     ]
 }

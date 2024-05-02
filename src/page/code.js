@@ -47,7 +47,7 @@ function createCheckboxes() {
 
         const label = document.createElement('label');
         label.className = 'checkmark-label';
-        label.innerHTML = key;
+        label.innerHTML = key.proper();
 
         checkContainer.appendChild(checkbox);
         checkContainer.appendChild(checkboxCover);
@@ -406,6 +406,7 @@ class Telescope {
         const wrapper = document.createElement('a');
         wrapper.className = "telescope-wrapper";
         wrapper.setAttribute('href','https://app.slooh.com' + url);
+        wrapper.setAttribute('target','_new');
 
         const img = document.createElement('img');
         img.className = "telescope-logo";
@@ -439,11 +440,7 @@ class Telescope {
 async function telescopes() {
     const data = await getTelescopeData();
     const observatoryContainer = document.querySelector('.observatories');
-    try {
-        observatoryContainer.querySelector('h2').remove();        
-    } catch (error) {
-        
-    }
+    observatoryContainer.innerHTML = "";
     for (let i = 0; i < data.observatoryList.length; i++) {
         const observatory = data.observatoryList[i];
         const name = observatory.obsShortName;
@@ -462,3 +459,4 @@ async function telescopes() {
 }
 
 telescopes();
+setInterval(telescopes,10000);

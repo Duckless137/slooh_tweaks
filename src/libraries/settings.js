@@ -46,15 +46,15 @@ async function setToDefault(toDefine) {
     const baseSetting = new BaseSettings()[toDefine];
     console.log(baseSetting);
     if (toDefine == 'additions') {
-        await storage.sync.set({ "additions": baseSetting }).then(() => {
+        await browser.storage.sync.set({ "additions": baseSetting }).then(() => {
             console.log("Value is set")
         });
     } else if (toDefine == 'removals') {
-        await storage.sync.set({ 'removals': baseSetting }).then(() => {
+        await browser.storage.sync.set({ 'removals': baseSetting }).then(() => {
             console.log("Value is set")
         });
     } else if (toDefine == 'settings') {
-        await storage.sync.set({ 'settings': baseSetting }).then(() => {
+        await browser.storage.sync.set({ 'settings': baseSetting }).then(() => {
             console.log("Value is set")
         });
     } else {
@@ -65,12 +65,12 @@ async function setToDefault(toDefine) {
 
 async function fetchLocalStorage(keys) {
     for (const key of keys) {
-        await storage.sync.getBytesInUse([key]).then(async function(bytes) {
+        await browser.storage.sync.getBytesInUse([key]).then(async function(bytes) {
             console.log(bytes);
             if (bytes < 1) {
                 setToDefault(key);
             } else {
-                await storage.sync.get(key).then((res) => {
+                await browser.storage.sync.get(key).then((res) => {
                     settings[key] = res[key];
                     console.log(res[key])
                     return 1;
@@ -84,15 +84,15 @@ async function fetchLocalStorage(keys) {
 async function update(key) {
     const data = settings[key];
     if (key == 'additions') {
-        await storage.sync.set({ "additions": data }).then(() => {
+        await browser.storage.sync.set({ "additions": data }).then(() => {
             console.log("Value is set")
         });
     } else if (key == 'removals') {
-        await storage.sync.set({ 'removals': data }).then(() => {
+        await browser.storage.sync.set({ 'removals': data }).then(() => {
             console.log("Value is set")
         });
     } else if (key == 'settings') {
-        await storage.sync.set({ 'settings': data }).then(() => {
+        await browser.storage.sync.set({ 'settings': data }).then(() => {
             console.log("Value is set")
         });
     } else {
@@ -101,7 +101,7 @@ async function update(key) {
 }
 
 async function clearCache() {
-    await storage.sync.clear().then(
+    await browser.storage.sync.clear().then(
         console.log("loaded data")
     );
 }
