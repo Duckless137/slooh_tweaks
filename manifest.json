@@ -1,6 +1,6 @@
 {
-    "manifest_version": 3,
-    "name": "Slooh Tweaks Beta",
+    "manifest_version": 2,
+    "name": "Slooh Tweaks Mozilla Beta",
     "description": "Allows for more utility and customization of Slooh.",
     "version": "0.5",
     "icons": {
