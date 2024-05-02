@@ -12,7 +12,6 @@
         "matches": ["https://app.slooh.com/*"],
         "js":[
             "src/libraries/settings.js",
-            "src/api/objects.js",
             "src/libraries/string.js",
             "src/libraries/cst.js",
             "src/tweaks.js"
