@@ -1,34 +1,3 @@
-String.prototype.getIndicesOf = function(searchStr, caseSensitive) {
-  let str = this;
-  const searchStrLen = searchStr.length;
-  if (searchStrLen == 0) {
-    return [];
-  }
-  let startIndex = 0,
-    index,
-    indices = [];
-  if (!caseSensitive) {
-    str = str.toLowerCase();
-    searchStr = searchStr.toLowerCase();
-  }
-  while ((index = str.indexOf(searchStr, startIndex)) > -1) {
-    indices.push(index);
-    startIndex = index + searchStrLen;
-  }
-  return indices;
-}
-
-String.prototype.is = function (text) {
-  let correct = true;
-  for (const frag of text.split("*")) {
-      if (!this.includes(frag)) {
-          correct = false;
-      }
-  }
-  return correct;
-}
-
-
 const CST = {
   convertToCST: function (time, trimStart) {
     trimStart = trimStart || false;
@@ -83,14 +52,11 @@ const CST = {
     }
   },
   changeLabel: function(label, query) {
-    console.log(`Keys: ${label}\nQuery: ${query}`)
     if (label.innerHTML.toLowerCase().includes("utc")) {
       if (Object.keys(CST.exces).includes(query)) {
         CST.exces[query](label);
       } else {
-        console.log("🕑 " + label.innerHTML);
         const indices = label.innerHTML.getIndicesOf("utc");
-        console.log("🕝 " + indices);
         for (const i of indices) {
           const index = label.innerHTML.toLowerCase().indexOf("utc");
           const time = label.innerHTML.slice(index - 6, index - 1);
@@ -109,7 +75,6 @@ const CST = {
   },
   exces: {
     ".large": function(element) {
-      console.log(element)
       const label = element.innerHTML;
       const time = CST.convertToCST(label.slice(0,5));
       element.innerHTML = time.slice(0,5) + element.innerHTML.slice(5);

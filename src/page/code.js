@@ -401,3 +401,64 @@ function refresh() {
         checkBox.checked = settings.removals[removal];
     }
 }
+class Telescope {
+    constructor(name, status, msg, logo, url) {
+        const wrapper = document.createElement('a');
+        wrapper.className = "telescope-wrapper";
+        wrapper.setAttribute('href','https://app.slooh.com' + url);
+
+        const img = document.createElement('img');
+        img.className = "telescope-logo";
+        img.src = logo;
+
+        const info = document.createElement('div');
+        info.className = "telescope-info";
+
+        const title = document.createElement('span');
+        title.className = "telescope-name"
+        title.innerHTML = name;
+
+        const statusDesc = document.createElement('p');
+        statusDesc.className = "telescope-status";
+        if (status == "offline") {
+            statusDesc.innerHTML = `🔴 ${status.proper()} (${msg})`;
+        } else {
+            statusDesc.innerHTML = `🟢 ${msg}`;
+        }
+
+        info.appendChild(title);
+        info.appendChild(statusDesc);
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(info);
+
+        return wrapper;
+    }
+}
+
+async function telescopes() {
+    const data = await getTelescopeData();
+    const observatoryContainer = document.querySelector('.observatories');
+    try {
+        observatoryContainer.querySelector('h2').remove();        
+    } catch (error) {
+        
+    }
+    for (let i = 0; i < data.observatoryList.length; i++) {
+        const observatory = data.observatoryList[i];
+        const name = observatory.obsShortName;
+        for (const telescope of observatory.obsTelescopes) {
+            const teleLabel = new Telescope(
+                telescope.teleName, 
+                telescope.teleOnlineStatus, 
+                telescope.enhancedStatusMessageTelescopeMenu,
+                telescope.teleLogoURL,
+                telescope.teleDetailsURL
+            );
+            console.log(teleLabel);
+            observatoryContainer.appendChild(teleLabel);
+        }
+    };
+}
+
+telescopes();
