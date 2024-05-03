@@ -33,8 +33,6 @@
         "default_popup": "src/page/index.html" 
     },
     "permissions": [
-        "storage",
-        "https://app.slooh.com/*",
-        "https://app.slooh.com/api/obs/getAllObservatoryStatus"
+        "storage"
     ]
 }
